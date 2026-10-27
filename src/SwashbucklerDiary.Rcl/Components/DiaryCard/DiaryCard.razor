@@ -1,87 +1,98 @@
 @namespace SwashbucklerDiary.Rcl.Components
 @inherits CardComponentBase<DiaryModel>
 
-<MCard Class="diary-card elevation-sm-2--active"
-       OnClick="HandeOnClick"
-       Elevation="0"
-       Ripple="false"
-       Rounded="@("lg")"
-       @oncontextmenu="OpenMenu"
-       __internal_preventDefault_oncontextmenu>
-    <MListItem Dense>
-        <MListItemContent>
-            <div class="d-flex align-center">
+<div class="timeline-item-wrapper @(IsActive ? "is-active" : "")">
+    <!-- 时间线小节点 -->
+    <div class="timeline-node">
+        <div class="timeline-dot @(Value.Top ? "timeline-dot--top" : "")"></div>
+    </div>
+
+    <!-- 柔和毛玻璃时间线卡片 -->
+    <MCard Class="@CardClass"
+           OnClick="HandeOnClick"
+           Elevation="0"
+           Ripple="false"
+           @oncontextmenu="OpenMenu"
+           __internal_preventDefault_oncontextmenu>
+        
+        <!-- 顶栏：时间、天气/心情、置顶/模板标识、下拉操作菜单 -->
+        <div class="diary-card__header">
+            <div class="diary-card__time-box">
                 @if (TimeFormat is not null)
                 {
                     var splits = Value.CreateTime.ToString(TimeFormat).Split(' ');
-                    <div class="text--secondary d-flex flex-wrap">
-                        @foreach (var item in splits)
+                    @for (int i = 0; i < splits.Length; i++)
+                    {
+                        var item = splits[i];
+                        if (i == 0)
                         {
-                            bool isFirst = splits.FirstOrDefault() == item;
-                            <span class="@($"me-2 {(isFirst ? "" : "text-caption")}")"
-                                  style="@(isFirst ? "font-size:1.1rem;" : "")">
-                                @item
-                            </span>
+                            <span class="diary-card__time-primary">@item</span>
                         }
-                    </div>
+                        else
+                        {
+                            <span class="diary-card__time-secondary">@item</span>
+                        }
+                    }
                 }
 
-                <div class="d-flex flex-shrink-0">
+                <!-- 天气与心情图标 -->
+                <div class="diary-card__meta-badges ms-2">
                     @if (!string.IsNullOrEmpty(weatherIcon))
                     {
-                        <MIcon Class="diary-card-icon me-2"
-                               Style="font-size:20px;">
+                        <MIcon Class="diary-card-icon diary-card__badge-icon">
                             @weatherIcon
                         </MIcon>
                     }
 
                     @if (!string.IsNullOrEmpty(moodIcon))
                     {
-                        <MIcon Class="diary-card-icon me-2"
-                               Style="font-size:20px;">
+                        <MIcon Class="diary-card-icon diary-card__badge-icon">
                             @moodIcon
                         </MIcon>
                     }
 
                     @if (DiaryCardListOptions.Template && Value.Template && Value.Id == DiaryCardListOptions.DefaultTemplateId)
                     {
-                        <MChip Small>
+                        <MChip XSmall Color="primary" Outlined Class="ms-1">
                             @I18n.T("Defalut")
                         </MChip>
                     }
                 </div>
             </div>
-        </MListItemContent>
-        <MListItemAction @onclick:stopPropagation="true">
-            @if (Value.Top)
-            {
-                <MIcon Style="width:36px;">vertical_align_top</MIcon>
-            }
 
-            @if (Value.Template)
-            {
-                <MIcon Style="width:36px;">space_dashboard</MIcon>
-            }
+            <!-- 右侧快捷状态与菜单按钮 -->
+            <div class="d-flex align-center flex-shrink-0" @onclick:stopPropagation="true">
+                @if (Value.Top)
+                {
+                    <MIcon Small Color="warning" Class="me-1">vertical_align_top</MIcon>
+                }
 
-            <MButton @attributes="activatorAttributes"
-                     Icon="true"
-                     OnClick="OpenMenu">
-                <MIcon Class="@MenuIconClass">
-                    keyboard_arrow_down
-                </MIcon>
-            </MButton>
-        </MListItemAction>
-    </MListItem>
-    <MDivider Class="mx-4"></MDivider>
-    <MListItem ThreeLine>
-        <MListItemContent>
-            @if (!string.IsNullOrEmpty(title))
-            {
-                <MListItemTitle Class="diary-card__title">
-                    @title
-                </MListItemTitle>
-            }
+                @if (Value.Template)
+                {
+                    <MIcon Small Color="info" Class="me-1">space_dashboard</MIcon>
+                }
 
+                <MButton @attributes="activatorAttributes"
+                         Icon="true"
+                         Small="true"
+                         OnClick="OpenMenu">
+                    <MIcon Small="true" Class="@MenuIconClass">
+                        keyboard_arrow_down
+                    </MIcon>
+                </MButton>
+            </div>
+        </div>
+
+        <!-- 标题（若有） -->
+        @if (!string.IsNullOrEmpty(title))
+        {
+            <div class="diary-card__title">
+                @title
+            </div>
+        }
+
+        <!-- 正文内容（支持 Markdown / 纯文本摘要预览） -->
+        <div class="diary-card__body">
             @if (Markdown)
             {
                 <SimpleMarkdownPreview Value="@text"
@@ -92,32 +103,34 @@
             }
             else
             {
-                <MListItemSubtitle>@text</MListItemSubtitle>
+                <span>@text</span>
             }
+        </div>
 
+        <!-- 底部信息：标签与地理位置 -->
+        @if ((Value.Tags is not null && Value.Tags.Count > 0) || !string.IsNullOrEmpty(Value.Location))
+        {
+            <div class="diary-card__footer">
+                <div class="diary-card__tags-scroll diary-card__tags">
+                    @if (Value.Tags is not null && Value.Tags.Count > 0)
+                    {
+                        @foreach (var item in Value.Tags)
+                        {
+                            <span @key="item.Id" class="diary-card__tag-pill">
+                                #@item.Name
+                            </span>
+                        }
+                    }
+                </div>
 
-        </MListItemContent>
-    </MListItem>
-    @if (Value.Tags is not null && Value.Tags.Count > 0)
-    {
-        <div class="px-4 diary-card__tags">
-            <div style="white-space: nowrap;width:100%;overflow-x:hidden;">
-                @foreach (var item in Value.Tags)
+                @if (!string.IsNullOrEmpty(Value.Location))
                 {
-                    <MChip @key="item.Id"
-                           Class="me-2">
-                        @(item.Name)
-                    </MChip>
+                    <div class="diary-card__location diary-card__location-pill">
+                        <MIcon Small="true">location_on</MIcon>
+                        <span>@Value.Location</span>
+                    </div>
                 }
             </div>
-        </div>
-    }
-    @if (!string.IsNullOrEmpty(Value.Location))
-    {
-        <div class="diary-card__location">
-            <DiaryInfoButton Icon="location_on"
-                             Text="@(Value.Location)">
-            </DiaryInfoButton>
-        </div>
-    }
-</MCard>
+        }
+    </MCard>
+</div>

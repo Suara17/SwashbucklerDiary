@@ -1,0 +1,96 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_VERSION: '10.0'
+  MAUI_CSPROJ_FILE_PATH: 'src/SwashbucklerDiary.Maui/SwashbucklerDiary.Maui.csproj'
+
+jobs:
+  build-apk:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install .NET MAUI Workload
+        run: |
+          dotnet workload install maui-android --ignore-failed-sources
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Create Temporary Android Keystore
+        id: create-keystore
+        shell: bash
+        run: |
+          keytool -genkeypair -v -keystore app.keystore -alias swashbuckler -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=SwashbucklerDiary, OU=App, O=SwashbucklerDiary, L=Default, S=Default, C=US"
+          echo "KEYSTORE_PATH=$(pwd)/app.keystore" >> $GITHUB_ENV
+
+      - name: Build & Publish Android APK (arm64-v8a)
+        shell: bash
+        run: |
+          dotnet publish ${{ env.MAUI_CSPROJ_FILE_PATH }} \
+            -c Release \
+            -f net10.0-android \
+            -r android-arm64 \
+            --sc \
+            -p:PublishTrimmed=true \
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidKeyStore=true \
+            -p:AndroidSigningKeyStore="${{ env.KEYSTORE_PATH }}" \
+            -p:AndroidSigningKeyAlias=swashbuckler \
+            -p:AndroidSigningKeyPass=123456 \
+            -p:AndroidSigningStorePass=123456 \
+            -o ./output/arm64
+
+      - name: Build & Publish Android APK (Universal / All-in-one)
+        shell: bash
+        run: |
+          dotnet publish ${{ env.MAUI_CSPROJ_FILE_PATH }} \
+            -c Release \
+            -f net10.0-android \
+            --sc \
+            -p:PublishTrimmed=true \
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidKeyStore=true \
+            -p:AndroidSigningKeyStore="${{ env.KEYSTORE_PATH }}" \
+            -p:AndroidSigningKeyAlias=swashbuckler \
+            -p:AndroidSigningKeyPass=123456 \
+            -p:AndroidSigningStorePass=123456 \
+            -o ./output/universal
+
+      - name: Collect APK Files
+        id: collect-apk
+        shell: bash
+        run: |
+          mkdir -p ./artifacts
+          find ./output -name "*Signed.apk" -o -name "*.apk" | while read -r apk; do
+            filename=$(basename "$apk")
+            echo "Found APK: $apk -> copying to ./artifacts/$filename"
+            cp "$apk" "./artifacts/$filename"
+          done
+          ls -lh ./artifacts
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SwashbucklerDiary-Android-APK
+          path: ./artifacts/*
+          retention-days: 7

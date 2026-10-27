@@ -58,6 +58,10 @@ namespace SwashbucklerDiary.Rcl.Components
             .Add("card-list__selected-menu", IsActive)
             .ToString();
 
+        private string CardClass => new CssBuilder("diary-card")
+            .Add("is-active", IsActive)
+            .ToString();
+
         private bool IsActive => Value.Id == DiaryCardListOptions.SelectedItemValue.Id;
 
         private string? TimeFormat => DiaryCardListOptions.TimeFormat;
