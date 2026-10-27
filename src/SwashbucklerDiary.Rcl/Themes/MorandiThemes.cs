@@ -144,25 +144,58 @@ namespace SwashbucklerDiary.Rcl.Themes
             }
             catch { }
 
-            string script = $@"
-                (function() {{
-                    try {{
-                        var root = document.documentElement;
-                        root.style.setProperty('--theme-primary', '{theme.Primary}');
-                        root.style.setProperty('--theme-card-bg', '{theme.LightBg}');
-                        root.style.setProperty('--theme-card-bg-dark', '{theme.DarkBg}');
-                        root.style.setProperty('--theme-badge-bg', '{theme.BadgeBg}');
-                        root.style.setProperty('--theme-badge-bg-dark', '{theme.DarkBadgeBg}');
-                        root.style.setProperty('--m-theme-primary', '{theme.Primary}');
-                    }} catch (e) {{
-                        console.error(e);
-                    }}
-                }})();
-            ";
-
+            // 1. 设置 CSS 变量 (遵循 evaluateJavascript 单行表达式)
             try
             {
-                await jsRuntime.EvaluateJavascript(script);
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--theme-primary', '{theme.Primary}')");
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--theme-card-bg', '{theme.LightBg}')");
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--theme-card-bg-dark', '{theme.DarkBg}')");
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--theme-badge-bg', '{theme.BadgeBg}')");
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--theme-badge-bg-dark', '{theme.DarkBadgeBg}')");
+                await jsRuntime.EvaluateJavascript($"document.documentElement.style.setProperty('--m-theme-primary', '{theme.Primary}')");
+            }
+            catch { }
+
+            // 2. 动态向 head 注入/更新专属高优先级样式标签，覆盖所有 primary 颜色与卡片背景
+            try
+            {
+                string cssContent = $@"
+                    :root {{
+                        --theme-primary: {theme.Primary} !important;
+                        --theme-card-bg: {theme.LightBg} !important;
+                        --theme-card-bg-dark: {theme.DarkBg} !important;
+                        --theme-badge-bg: {theme.BadgeBg} !important;
+                        --theme-badge-bg-dark: {theme.DarkBadgeBg} !important;
+                        --m-theme-primary: {theme.Primary} !important;
+                    }}
+                    .diary-card-compact--default {{
+                        background: {theme.LightBg} !important;
+                    }}
+                    .theme--dark .diary-card-compact--default {{
+                        background: {theme.DarkBg} !important;
+                    }}
+                    .timeline-node-badge:not(.timeline-node-badge--top) {{
+                        background: {theme.BadgeBg} !important;
+                        color: {theme.Primary} !important;
+                    }}
+                    .theme--dark .timeline-node-badge:not(.timeline-node-badge--top) {{
+                        background: {theme.DarkBadgeBg} !important;
+                        color: {theme.Primary} !important;
+                    }}
+                    .material-symbols_active .m-icon {{
+                        color: {theme.Primary} !important;
+                    }}
+                    .btn-primary, .m-btn.primary, .m-btn.m-btn--depressed.primary, .m-btn--fab.primary {{
+                        background-color: {theme.Primary} !important;
+                        border-color: {theme.Primary} !important;
+                    }}
+                    .diary-card-compact.is-active {{
+                        border-color: {theme.Primary} !important;
+                    }}
+                ".Replace("\r\n", " ").Replace("\n", " ").Replace("\"", "\\\"");
+
+                string injectScript = $"(function(){{var s=document.getElementById('morandi-theme-override');if(!s){{s=document.createElement('style');s.id='morandi-theme-override';document.head.appendChild(s);}}s.textContent=\"{cssContent}\";return true;}})()";
+                await jsRuntime.EvaluateJavascript(injectScript);
             }
             catch { }
         }

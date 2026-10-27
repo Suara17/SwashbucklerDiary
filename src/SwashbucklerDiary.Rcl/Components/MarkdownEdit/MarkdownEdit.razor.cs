@@ -114,10 +114,7 @@ namespace SwashbucklerDiary.Rcl.Components
                 return;
             }
 
-            if (string.IsNullOrEmpty(Value))
-            {
-                await Focus();
-            }
+            await Focus();
 
             await mMarkdown.InsertValueAsync(value);
         }

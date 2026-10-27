@@ -169,13 +169,22 @@ namespace SwashbucklerDiary.Rcl.Layout
 
         protected void HandleSettingsChanged()
         {
-            InvokeAsync(() =>
+            InvokeAsync(async () =>
             {
                 var theme = SettingService.Get(it => it.Theme);
                 ThemeService.SetTheme(theme);
 
                 var language = SettingService.Get(it => it.Language);
                 I18n.SetCulture(new(language));
+
+                try
+                {
+                    var themeColorId = SettingService.Get(s => s.ThemeColorId, MorandiThemes.DefaultThemeId);
+                    var currentMorandi = MorandiThemes.GetTheme(themeColorId);
+                    await MorandiThemes.ApplyThemeAsync(JSRuntime, MasaBlazor, currentMorandi);
+                    StateHasChanged();
+                }
+                catch { }
             });
         }
 

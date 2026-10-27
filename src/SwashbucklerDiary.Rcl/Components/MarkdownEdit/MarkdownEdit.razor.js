@@ -9,15 +9,34 @@ function after(dotNetCallbackRef, element, outlineElement, copyCutPatch) {
 }
 
 function focus(domRef) {
-    const vditor = domRef.Vditor.vditor;
-    const range = vditor[vditor.currentMode].range
-    if (range) {
+    if (!domRef || !domRef.Vditor) return;
+    try {
+        const vditor = domRef.Vditor.vditor;
+        const currentMode = vditor ? vditor.currentMode : null;
+        let range = currentMode && vditor[currentMode] ? vditor[currentMode].range : null;
         const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
 
-    domRef.Vditor.focus();
+        if (range) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            // 当 range 为空时，尝试寻找编辑区末尾建立安全选区，避免 Vditor.insertValue 中 getRangeAt(0) 越界
+            const editArea = domRef.querySelector('.vditor-reset') || domRef.querySelector('[contenteditable="true"]') || domRef;
+            if (editArea) {
+                const newRange = document.createRange();
+                newRange.selectNodeContents(editArea);
+                newRange.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+                if (vditor && currentMode && vditor[currentMode]) {
+                    vditor[currentMode].range = newRange;
+                }
+            }
+        }
+        domRef.Vditor.focus();
+    } catch (e) {
+        console.error("MarkdownEdit focus error:", e);
+    }
 }
 
 function focusToEnd(domRef) {
