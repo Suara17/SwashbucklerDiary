@@ -58,6 +58,26 @@ namespace SwashbucklerDiary.Rcl.Components
             .Add("card-list__selected-menu", IsActive)
             .ToString();
 
+        private string DateDisplayFormat
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(TimeFormat))
+                {
+                    return Value.CreateTime.Year == DateTime.Now.Year ? "MM/dd" : "yyyy/MM/dd";
+                }
+
+                // 如果设置的时间格式里包含时分，日期部分取前面的年月日
+                if (TimeFormat.Contains("HH:mm"))
+                {
+                    var datePart = TimeFormat.Replace("HH:mm", "").Replace("dddd", "").Trim();
+                    return string.IsNullOrWhiteSpace(datePart) ? (Value.CreateTime.Year == DateTime.Now.Year ? "MM/dd" : "yyyy/MM/dd") : datePart;
+                }
+
+                return TimeFormat;
+            }
+        }
+
         private string CardClass => new CssBuilder()
             .Add("diary-card")
             .Add("is-active", IsActive)

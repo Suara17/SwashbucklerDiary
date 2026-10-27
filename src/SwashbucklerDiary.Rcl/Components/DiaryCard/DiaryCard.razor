@@ -2,7 +2,7 @@
 @inherits CardComponentBase<DiaryModel>
 
 <div class="timeline-item-wrapper @(IsActive ? "is-active" : "")">
-    <!-- 时间线小节点 -->
+    <!-- 时间线小节点（带悬停光晕） -->
     <div class="timeline-node">
         <div class="timeline-dot @(Value.Top ? "timeline-dot--top" : "")"></div>
     </div>
@@ -15,28 +15,27 @@
            @oncontextmenu="OpenMenu"
            __internal_preventDefault_oncontextmenu>
         
-        <!-- 顶栏：时间、天气/心情、置顶/模板标识、下拉操作菜单 -->
+        <!-- 顶栏：日期胶囊 + 时分胶囊 + 天气/心情 + 菜单 -->
         <div class="diary-card__header">
-            <div class="diary-card__time-box">
-                @if (TimeFormat is not null)
-                {
-                    var splits = Value.CreateTime.ToString(TimeFormat).Split(' ');
-                    @for (int i = 0; i < splits.Length; i++)
-                    {
-                        var item = splits[i];
-                        if (i == 0)
-                        {
-                            <span class="diary-card__time-primary">@item</span>
-                        }
-                        else
-                        {
-                            <span class="diary-card__time-secondary">@item</span>
-                        }
-                    }
-                }
+            <div class="diary-card__time-badge-group">
+                <!-- 日期胶囊（如 2026/10/27 或 10/27） -->
+                <span class="diary-card__date-pill">
+                    @(Value.CreateTime.ToString(DateDisplayFormat))
+                </span>
+
+                <!-- 明确展示一天的时分（如 14:35） -->
+                <span class="diary-card__time-pill">
+                    <MIcon Small="true">schedule</MIcon>
+                    <span>@(Value.CreateTime.ToString("HH:mm"))</span>
+                </span>
+
+                <!-- 星期微标 -->
+                <span class="diary-card__week-pill ms-1">
+                    @(I18n.ToWeek(Value.CreateTime))
+                </span>
 
                 <!-- 天气与心情图标 -->
-                <div class="diary-card__meta-badges ms-2">
+                <div class="diary-card__status-badges">
                     @if (!string.IsNullOrEmpty(weatherIcon))
                     {
                         <MIcon Class="diary-card-icon diary-card__badge-icon">
@@ -60,7 +59,7 @@
                 </div>
             </div>
 
-            <!-- 右侧快捷状态与菜单按钮 -->
+            <!-- 右侧状态徽章与更多菜单 -->
             <div class="d-flex align-center flex-shrink-0" @onclick:stopPropagation="true">
                 @if (Value.Top)
                 {
@@ -91,7 +90,7 @@
             </div>
         }
 
-        <!-- 正文内容（支持 Markdown / 纯文本摘要预览） -->
+        <!-- 正文内容预览（Markdown / 纯文本优雅折叠） -->
         <div class="diary-card__body">
             @if (Markdown)
             {

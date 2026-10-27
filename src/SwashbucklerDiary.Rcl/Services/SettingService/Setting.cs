@@ -24,7 +24,7 @@ namespace SwashbucklerDiary.Rcl.Services
         public bool DiaryCardIcon { get; set; } = true;
         public int AlertTimeout { get; set; } = 2000;
         public bool WebDAVCopyResources { get; set; }
-        public string DiaryCardTimeFormat { get; set; } = "MM/dd";
+        public string DiaryCardTimeFormat { get; set; } = "yyyy/MM/dd HH:mm";
         public bool AchievementsAlert { get; set; } = true;
         public string LANDeviceName { get; set; } = string.Empty;
         public int LANScanPort { get; set; } = 5299;
