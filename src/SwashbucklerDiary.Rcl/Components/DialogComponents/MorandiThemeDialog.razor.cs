@@ -13,16 +13,10 @@ namespace SwashbucklerDiary.Rcl.Components
         private string originalThemeId = MorandiThemes.DefaultThemeId;
 
         [Inject]
-        private ISettingService SettingService { get; set; } = default!;
-
-        [Inject]
         private IJSRuntime JSRuntime { get; set; } = default!;
 
         [Inject]
         private MasaBlazor MasaBlazor { get; set; } = default!;
-
-        [Inject]
-        private II18nService I18n { get; set; } = default!;
 
         [Parameter]
         public EventCallback<string> OnThemeChanged { get; set; }

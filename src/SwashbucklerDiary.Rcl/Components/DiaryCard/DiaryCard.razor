@@ -132,22 +132,23 @@
                     </div>
                 }
 
-                <!-- 展开底部轻量提示与操作行 (移除 Read 按钮，支持点击内容直接跳) -->
-                <div class="compact-card__action-bar" @onclick:stopPropagation="false">
+                <!-- 展开底部轻量提示与操作行 (移除 Read 按钮，点击菜单按钮阻断跳转) -->
+                <div class="compact-card__action-bar">
                     <div class="compact-card__tap-hint">
                         <MIcon Style="font-size:13px;" Class="me-1" Color="var(--theme-primary, #6C8A9C)">open_in_new</MIcon>
                         <span>@(I18n.T("Tap to read"))</span>
                     </div>
 
-                    <MButton @attributes="activatorAttributes"
-                             Icon="true"
-                             XSmall="true"
-                             OnClick="OpenMenu"
-                             @onclick:stopPropagation="true">
-                        <MIcon XSmall="true">
-                            more_horiz
-                        </MIcon>
-                    </MButton>
+                    <div @onclick:stopPropagation="true">
+                        <MButton @attributes="activatorAttributes"
+                                 Icon="true"
+                                 XSmall="true"
+                                 OnClick="OpenMenu">
+                            <MIcon XSmall="true">
+                                more_horiz
+                            </MIcon>
+                        </MButton>
+                    </div>
                 </div>
             </div>
 
