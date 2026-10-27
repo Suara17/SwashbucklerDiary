@@ -1,135 +1,157 @@
 @namespace SwashbucklerDiary.Rcl.Components
 @inherits CardComponentBase<DiaryModel>
 
-<div class="timeline-item-wrapper @(IsActive ? "is-active" : "")">
-    <!-- 时间线小节点（带悬停光晕） -->
-    <div class="timeline-node">
-        <div class="timeline-dot @(Value.Top ? "timeline-dot--top" : "")"></div>
+<div class="timeline-row @(IsActive ? "is-active" : "")">
+    <!-- 左侧时间戳 (HH:mm) -->
+    <div class="timeline-time-col">
+        @(Value.CreateTime.ToString("HH:mm"))
     </div>
 
-    <!-- 柔和毛玻璃时间线卡片 -->
-    <MCard Class="@CardClass"
-           OnClick="HandeOnClick"
-           Elevation="0"
-           Ripple="false"
-           @oncontextmenu="OpenMenu"
-           __internal_preventDefault_oncontextmenu>
-        
-        <!-- 顶栏：日期胶囊 + 时分胶囊 + 天气/心情 + 菜单 -->
-        <div class="diary-card__header">
-            <div class="diary-card__time-badge-group">
-                <!-- 日期胶囊（如 2026/10/27 或 10/27） -->
-                <span class="diary-card__date-pill">
-                    @(Value.CreateTime.ToString(DateDisplayFormat))
-                </span>
+    <!-- 中间节点图标 (圆圈 + 微标) -->
+    <div class="timeline-node-col">
+        <div class="timeline-node-badge @(Value.Top ? "timeline-node-badge--top" : "")">
+            @if (!string.IsNullOrEmpty(weatherIcon))
+            {
+                <MIcon Class="diary-card-icon" Style="font-size:14px;">
+                    @weatherIcon
+                </MIcon>
+            }
+            else if (!string.IsNullOrEmpty(moodIcon))
+            {
+                <MIcon Class="diary-card-icon" Style="font-size:14px;">
+                    @moodIcon
+                </MIcon>
+            }
+            else if (Value.Top)
+            {
+                <MIcon Style="font-size:14px;">star</MIcon>
+            }
+            else
+            {
+                <MIcon Style="font-size:14px;">edit_note</MIcon>
+            }
+        </div>
+    </div>
 
-                <!-- 明确展示一天的时分（如 14:35） -->
-                <span class="diary-card__time-pill">
-                    <MIcon Small="true">schedule</MIcon>
-                    <span>@(Value.CreateTime.ToString("HH:mm"))</span>
-                </span>
+    <!-- 右侧紧凑型莫兰迪卡片 (点击展开/折叠，不再重复显示时间) -->
+    <div class="timeline-card-col">
+        <div class="diary-card-compact @(Value.Top ? "diary-card-compact--top" : "diary-card-compact--default") @(isExpanded ? "is-expanded" : "") @(IsActive ? "is-active" : "")"
+             @onclick="ToggleExpand"
+             @oncontextmenu="OpenMenu"
+             __internal_preventDefault_oncontextmenu>
+            
+            <!-- 紧凑单行首部 -->
+            <div class="compact-card__headline">
+                <div class="compact-card__title-box">
+                    <span class="compact-card__title">
+                        @(string.IsNullOrWhiteSpace(title) ? (string.IsNullOrWhiteSpace(text) ? I18n.T("Untitled") : text) : title)
+                    </span>
 
-                <!-- 星期微标 -->
-                <span class="diary-card__week-pill ms-1">
-                    @(I18n.ToWeek(Value.CreateTime))
-                </span>
-
-                <!-- 天气与心情图标 -->
-                <div class="diary-card__status-badges">
-                    @if (!string.IsNullOrEmpty(weatherIcon))
+                    @if (Value.Top)
                     {
-                        <MIcon Class="diary-card-icon diary-card__badge-icon">
-                            @weatherIcon
-                        </MIcon>
-                    }
-
-                    @if (!string.IsNullOrEmpty(moodIcon))
-                    {
-                        <MIcon Class="diary-card-icon diary-card__badge-icon">
-                            @moodIcon
-                        </MIcon>
+                        <span class="compact-card__pill compact-card__pill--top">
+                            @I18n.T("Top")
+                        </span>
                     }
 
                     @if (DiaryCardListOptions.Template && Value.Template && Value.Id == DiaryCardListOptions.DefaultTemplateId)
                     {
-                        <MChip XSmall Color="primary" Outlined Class="ms-1">
+                        <span class="compact-card__pill">
                             @I18n.T("Defalut")
-                        </MChip>
+                        </span>
                     }
-                </div>
-            </div>
 
-            <!-- 右侧状态徽章与更多菜单 -->
-            <div class="d-flex align-center flex-shrink-0" @onclick:stopPropagation="true">
-                @if (Value.Top)
-                {
-                    <MIcon Small Color="warning" Class="me-1">vertical_align_top</MIcon>
-                }
-
-                @if (Value.Template)
-                {
-                    <MIcon Small Color="info" Class="me-1">space_dashboard</MIcon>
-                }
-
-                <MButton @attributes="activatorAttributes"
-                         Icon="true"
-                         Small="true"
-                         OnClick="OpenMenu">
-                    <MIcon Small="true" Class="@MenuIconClass">
-                        keyboard_arrow_down
-                    </MIcon>
-                </MButton>
-            </div>
-        </div>
-
-        <!-- 标题（若有） -->
-        @if (!string.IsNullOrEmpty(title))
-        {
-            <div class="diary-card__title">
-                @title
-            </div>
-        }
-
-        <!-- 正文内容预览（Markdown / 纯文本优雅折叠） -->
-        <div class="diary-card__body">
-            @if (Markdown)
-            {
-                <SimpleMarkdownPreview Value="@text"
-                                       Style="pointer-events:none;"
-                                       Optimize="false"
-                                       Options="_markdownOptions">
-                </SimpleMarkdownPreview>
-            }
-            else
-            {
-                <span>@text</span>
-            }
-        </div>
-
-        <!-- 底部信息：标签与地理位置 -->
-        @if ((Value.Tags is not null && Value.Tags.Count > 0) || !string.IsNullOrEmpty(Value.Location))
-        {
-            <div class="diary-card__footer">
-                <div class="diary-card__tags-scroll diary-card__tags">
                     @if (Value.Tags is not null && Value.Tags.Count > 0)
                     {
-                        @foreach (var item in Value.Tags)
+                        @foreach (var tag in Value.Tags.Take(2))
                         {
-                            <span @key="item.Id" class="diary-card__tag-pill">
-                                #@item.Name
+                            <span @key="tag.Id" class="compact-card__pill">
+                                #@tag.Name
                             </span>
                         }
                     }
                 </div>
 
-                @if (!string.IsNullOrEmpty(Value.Location))
+                <MIcon Class="compact-card__arrow">
+                    keyboard_arrow_down
+                </MIcon>
+            </div>
+
+            <!-- 点击展开详情区 -->
+            <div class="compact-card__details">
+                <!-- 正文内容 (Markdown / 纯文本) -->
+                @if (!string.IsNullOrWhiteSpace(text))
                 {
-                    <div class="diary-card__location diary-card__location-pill">
-                        <MIcon Small="true">location_on</MIcon>
-                        <span>@Value.Location</span>
+                    <div class="compact-card__content">
+                        @if (Markdown)
+                        {
+                            <SimpleMarkdownPreview Value="@text"
+                                                   Style="pointer-events:none;"
+                                                   Optimize="false"
+                                                   Options="_markdownOptions">
+                            </SimpleMarkdownPreview>
+                        }
+                        else
+                        {
+                            <span>@text</span>
+                        }
                     </div>
                 }
+
+                <!-- 参考图风格内嵌白卡：地点与附加信息 -->
+                @if (!string.IsNullOrEmpty(Value.Location))
+                {
+                    <div class="compact-card__inner-box">
+                        <div class="compact-card__inner-left">
+                            <MIcon Small="true">location_on</MIcon>
+                            <span>@I18n.T("Location")</span>
+                        </div>
+                        <div class="compact-card__inner-right">
+                            @Value.Location
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(weatherIcon) || !string.IsNullOrEmpty(moodIcon))
+                {
+                    <div class="compact-card__inner-box">
+                        <div class="compact-card__inner-left">
+                            <MIcon Small="true">wb_sunny</MIcon>
+                            <span>@I18n.T("Status")</span>
+                        </div>
+                        <div class="compact-card__inner-right d-flex align-center">
+                            @if (!string.IsNullOrEmpty(weatherIcon))
+                            {
+                                <MIcon Class="diary-card-icon me-1" Style="font-size:15px;">@weatherIcon</MIcon>
+                            }
+                            @if (!string.IsNullOrEmpty(moodIcon))
+                            {
+                                <MIcon Class="diary-card-icon" Style="font-size:15px;">@moodIcon</MIcon>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- 展开底部轻量操作行 -->
+                <div class="compact-card__action-bar" @onclick:stopPropagation="true">
+                    <MButton Text="true"
+                             XSmall="true"
+                             OnClick="HandeOnClick">
+                        <MIcon XSmall="true" Class="me-1">open_in_new</MIcon>
+                        @I18n.T("Read")
+                    </MButton>
+
+                    <MButton @attributes="activatorAttributes"
+                             Icon="true"
+                             XSmall="true"
+                             OnClick="OpenMenu">
+                        <MIcon XSmall="true">
+                            more_horiz
+                        </MIcon>
+                    </MButton>
+                </div>
             </div>
-        }
-    </MCard>
+
+        </div>
+    </div>
 </div>

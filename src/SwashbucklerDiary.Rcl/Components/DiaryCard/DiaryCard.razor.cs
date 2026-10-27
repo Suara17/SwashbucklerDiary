@@ -20,6 +20,13 @@ namespace SwashbucklerDiary.Rcl.Components
 
         private Dictionary<string, object>? _markdownOptions;
 
+        private bool isExpanded = false;
+
+        private void ToggleExpand()
+        {
+            isExpanded = !isExpanded;
+        }
+
         [Inject]
         private IGlobalConfiguration GlobalConfiguration { get; set; } = default!;
 

@@ -182,340 +182,296 @@ html {
 }
 
 /* ==========================================================================
-   Timeline & Elegant Diary Card Redesign
+   Healing Timeline & Expandable Compact Cards (Ref Style)
    ========================================================================== */
 
-/* 时间线列表外层容器 */
+/* 列表外层流 */
 .card-list__content {
     flex: 1;
     min-width: 1px;
     position: relative;
-    padding-left: 20px;
+    padding-left: 0 !important;
 }
 
-@media screen and (min-width: 600px) {
-    .card-list__content {
-        padding-left: 26px;
-    }
+/* 时间轴列表流整体容器 */
+.timeline-stream-container {
+    position: relative;
+    width: 100%;
 }
 
-/* 时间轴主竖线：微光渐变，带精致末端渐隐 */
-.card-list__content::before {
+/* 贯穿圆环中心的细时间轴竖线（时间宽约44px + 间距） */
+.timeline-stream-container::before {
     content: "";
     position: absolute;
-    top: 24px;
-    bottom: 24px;
-    left: 7px;
-    width: 2px;
-    background: linear-gradient(180deg, 
-        rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.6) 0%, 
-        rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.25) 50%, 
-        rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.05) 100%
-    );
-    border-radius: 999px;
-    pointer-events: none;
+    top: 20px;
+    bottom: 20px;
+    left: 56px;
+    width: 1.5px;
+    background: #e2e8f0;
     z-index: 1;
 }
 
-@media screen and (min-width: 600px) {
-    .card-list__content::before {
-        left: 9px;
-    }
+.theme--dark .timeline-stream-container::before {
+    background: #1e293b;
 }
 
-/* 单条时间线项目外层 */
-.timeline-item-wrapper {
+/* 单行时间轴容器 */
+.timeline-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
     position: relative;
-    margin-bottom: 20px;
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    width: 100%;
 }
 
-/* 时间线发光节点：双环立体脉冲质感 */
-.timeline-node {
-    position: absolute;
-    left: -20px;
-    top: 18px;
-    width: 16px;
-    height: 16px;
+/* 左侧独立时间列 (HH:mm) */
+.timeline-time-col {
+    width: 44px;
+    padding-top: 8px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+    user-select: none;
+}
+
+.theme--dark .timeline-time-col {
+    color: #64748b;
+}
+
+/* 中间节点列 (圆形微标) */
+.timeline-node-col {
+    width: 25px;
+    margin: 0 9px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    padding-top: 5px;
+}
+
+.timeline-node-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    background: #eceef9;
+    color: #4f46e5;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-@media screen and (min-width: 600px) {
-    .timeline-node {
-        left: -26px;
-        top: 20px;
-        width: 20px;
-        height: 20px;
-    }
+.theme--dark .timeline-node-badge {
+    border-color: #1e293b;
+    background: #1e2338;
+    color: #818cf8;
 }
 
-.timeline-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2.5px solid var(--m-theme-primary, #5c6bc0);
-    box-shadow: 0 0 0 3px rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.18), 0 2px 4px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+.timeline-node-badge--top {
+    background: #fed7aa !important;
+    color: #c2410c !important;
 }
 
-.timeline-item-wrapper:hover .timeline-dot,
-.timeline-item-wrapper.is-active .timeline-dot {
-    transform: scale(1.3);
-    background: var(--m-theme-primary, #5c6bc0);
-    box-shadow: 0 0 0 5px rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.28), 0 0 12px rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.45);
+.timeline-row:hover .timeline-node-badge,
+.timeline-row.is-active .timeline-node-badge {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* 置顶日记高光金黄节点 */
-.timeline-dot--top {
-    border-color: #f59e0b !important;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 2px 5px rgba(245, 158, 11, 0.15) !important;
+.timeline-node-badge .m-icon {
+    font-size: 14px !important;
 }
 
-.timeline-item-wrapper:hover .timeline-dot--top,
-.timeline-item-wrapper.is-active .timeline-dot--top {
-    background: #f59e0b !important;
-    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.32), 0 0 14px rgba(245, 158, 11, 0.5) !important;
+/* 右侧卡片列 */
+.timeline-card-col {
+    flex: 1;
+    min-width: 0;
 }
 
-/* ================== 日记毛玻璃柔和微质感卡片 ================== */
-.diary-card {
-    width: 100%;
-    margin-bottom: 0 !important;
-    padding: 16px 18px !important;
-    border-radius: 18px !important;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-    overflow: hidden;
+/* ================== 右侧紧凑型莫兰迪卡片 ================== */
+.diary-card-compact {
+    border-radius: 14px !important;
+    padding: 10px 13px !important;
     cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    width: 100%;
+    border: 1px solid transparent !important;
+    overflow: hidden;
 }
 
-/* 浅色主题：温润白瓷微透质感 + 柔和环境漫射光 */
-.theme--light .diary-card {
-    background: rgba(255, 255, 255, 0.82) !important;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    box-shadow: 0 4px 20px -2px rgba(100, 116, 139, 0.08), 
-                0 2px 6px -1px rgba(100, 116, 139, 0.04) !important;
+/* 莫兰迪低饱和度淡彩系统 */
+.diary-card-compact--default {
+    background: #eceef9 !important;
 }
 
-.theme--light .diary-card:hover {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-color: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.35) !important;
-    box-shadow: 0 10px 28px -4px rgba(100, 116, 139, 0.16), 
-                0 4px 12px -2px rgba(100, 116, 139, 0.08) !important;
-    transform: translateY(-2.5px);
+.theme--dark .diary-card-compact--default {
+    background: #1e2338 !important;
 }
 
-/* 深色主题：深邃星夜雾面毛玻璃 */
-.theme--dark .diary-card {
-    background: rgba(24, 28, 36, 0.72) !important;
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.09) !important;
-    box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.45), 
-                0 2px 8px -1px rgba(0, 0, 0, 0.25) !important;
+.diary-card-compact--top {
+    background: #fef4e8 !important;
 }
 
-.theme--dark .diary-card:hover {
-    background: rgba(30, 36, 48, 0.85) !important;
-    border-color: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.4) !important;
-    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.55), 
-                0 4px 14px -2px rgba(0, 0, 0, 0.35) !important;
-    transform: translateY(-2.5px);
+.theme--dark .diary-card-compact--top {
+    background: #2e261b !important;
 }
 
-/* 卡片激活选定状态 */
-.diary-card.is-active {
+.diary-card-compact:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.theme--dark .diary-card-compact:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.diary-card-compact.is-active {
     border-color: var(--m-theme-primary, #5c6bc0) !important;
-    box-shadow: 0 0 0 2px rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.3) !important;
 }
 
-/* 顶栏排版：时间胶囊 + 元数据 + 交互按钮 */
-.diary-card__header {
+/* 首行紧凑标题栏 */
+.compact-card__headline {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 8px;
+    min-height: 24px;
+    gap: 6px;
 }
 
-/* 时间胶囊群组 */
-.diary-card__time-badge-group {
-    display: inline-flex;
+.compact-card__title-box {
+    display: flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
 }
 
-/* 日期气泡（年/月/日） */
-.diary-card__date-pill {
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    padding: 2.5px 8px;
-    border-radius: 8px;
-    background: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.08);
-    color: var(--m-theme-primary, #5c6bc0);
-    border: 1px solid rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.12);
-}
-
-.theme--dark .diary-card__date-pill {
-    background: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.16);
-    border-color: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.25);
-}
-
-/* 时分胶囊（HH:mm）- 突出显示一天的具体时刻 */
-.diary-card__time-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    padding: 2.5px 7px;
-    border-radius: 8px;
-    background: rgba(100, 116, 139, 0.08);
-    color: var(--m-theme-secondary, #64748b);
-    border: 1px solid rgba(100, 116, 139, 0.12);
-}
-
-.diary-card__time-pill .m-icon {
-    font-size: 13px !important;
-    opacity: 0.8;
-}
-
-.theme--dark .diary-card__time-pill {
-    background: rgba(255, 255, 255, 0.07);
-    color: #94a3b8;
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-/* 星期标识 */
-.diary-card__week-pill {
-    font-size: 0.76rem;
-    color: var(--m-theme-secondary, #64748b);
-    opacity: 0.8;
-}
-
-/* 天气与心情微章 */
-.diary-card__status-badges {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-left: 2px;
-}
-
-.diary-card__badge-icon {
-    font-size: 17px !important;
-    opacity: 0.75;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.diary-card:hover .diary-card__badge-icon {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* 标题样式：加粗、微距、字阶呼吸 */
-.diary-card__title {
-    font-size: 1.08rem !important;
+.compact-card__title {
+    font-size: 14.5px !important;
     font-weight: 700 !important;
-    line-height: 1.45 !important;
-    letter-spacing: -0.015em !important;
-    margin-bottom: 8px !important;
+    letter-spacing: -0.01em;
     color: inherit;
-    word-break: break-word;
-}
-
-/* 正文预览区域：精致行高与平滑截断 */
-.diary-card__body {
-    margin-bottom: 6px;
-    font-size: 0.91rem;
-    line-height: 1.68;
-    color: rgba(var(--m-theme-on-surface-rgb, 51, 65, 85), 0.84);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+/* 药丸胶囊微标 */
+.compact-card__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.85);
+    color: #64748b;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    flex-shrink: 0;
+}
+
+.theme--dark .compact-card__pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.compact-card__pill--top {
+    color: #d97706 !important;
+    background: rgba(254, 243, 199, 0.9) !important;
+    border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+/* 展开收起小箭头 */
+.compact-card__arrow {
+    color: #64748b;
+    opacity: 0.6;
+    font-size: 18px !important;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.diary-card-compact.is-expanded .compact-card__arrow {
+    transform: rotate(180deg);
+}
+
+/* 点击展开区域 */
+.compact-card__details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease, margin-top 0.25s ease;
+}
+
+.diary-card-compact.is-expanded .compact-card__details {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 10px;
+}
+
+.compact-card__content {
+    font-size: 12.8px;
+    line-height: 1.62;
+    color: rgba(var(--m-theme-on-surface-rgb, 51, 65, 85), 0.82);
+    margin-bottom: 8px;
     word-break: break-word;
 }
 
-.theme--dark .diary-card__body {
-    color: rgba(226, 232, 240, 0.84);
+.theme--dark .compact-card__content {
+    color: rgba(226, 232, 240, 0.82);
 }
 
-.diary-card__body p {
-    margin-bottom: 4px !important;
-}
-
-.diary-card__body p:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* 底部标签与位置栏 */
-.diary-card__footer {
+/* 参考图风格内嵌白卡 (Nested White Container) */
+.compact-card__inner-box {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 9px;
+    padding: 7px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(148, 163, 184, 0.12);
-    font-size: 0.78rem;
+    font-size: 11.5px;
+    color: #64748b;
+    margin-bottom: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.theme--dark .diary-card__footer {
-    border-top-color: rgba(255, 255, 255, 0.06);
+.theme--dark .compact-card__inner-box {
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    border-color: rgba(255, 255, 255, 0.04);
 }
 
-.diary-card__tags-scroll {
+.compact-card__inner-left {
     display: flex;
     align-items: center;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    gap: 4px;
 }
 
-.diary-card__tags-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.diary-card__tag-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 2.5px 8px;
-    border-radius: 7px;
-    font-size: 0.74rem;
-    font-weight: 500;
-    background: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.08);
-    color: var(--m-theme-primary, #5c6bc0);
-    white-space: nowrap;
-    border: 1px solid rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.12);
-}
-
-.theme--dark .diary-card__tag-pill {
-    background: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.16);
-    border-color: rgba(var(--m-theme-primary-rgb, 92, 107, 192), 0.25);
-}
-
-.diary-card__location-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.75rem;
-    color: var(--m-theme-secondary, #64748b);
-    white-space: nowrap;
-    opacity: 0.85;
-}
-
-.diary-card__location-pill .m-icon {
+.compact-card__inner-left .m-icon {
     font-size: 14px !important;
+}
+
+.compact-card__inner-right {
+    font-weight: 600;
+    color: var(--m-theme-on-surface, #0f172a);
+}
+
+/* 底部操作行 (阅读/更多) */
+.compact-card__action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 4px;
 }
 
 .card-list__wrap {

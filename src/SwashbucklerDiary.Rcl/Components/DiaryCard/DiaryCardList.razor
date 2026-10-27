@@ -4,19 +4,21 @@
 <div class="diary-card-list">
     <div class="card-list__wrap">
         <div class="@InternalClass">
-            <CascadingValue Value="options"
-                            IsFixed="true">
-                <Virtualize Items="InternalValue"
-                            ItemSize="100"
-                            Context="item"
-                            OverscanCount="30">
-                    <DiaryCard @key="item.Id"
-                               Value="item"
-                               OnClick="ClickCard"
-                               OnMenu="OpenMenu">
-                    </DiaryCard>
-                </Virtualize>
-            </CascadingValue>
+            <div class="timeline-stream-container">
+                <CascadingValue Value="options"
+                                IsFixed="true">
+                    <Virtualize Items="InternalValue"
+                                ItemSize="50"
+                                Context="item"
+                                OverscanCount="30">
+                        <DiaryCard @key="item.Id"
+                                   Value="item"
+                                   OnClick="ClickCard"
+                                   OnMenu="OpenMenu">
+                        </DiaryCard>
+                    </Virtualize>
+                </CascadingValue>
+            </div>
         </div>
         @if (ShowStatisticsCard)
         {
