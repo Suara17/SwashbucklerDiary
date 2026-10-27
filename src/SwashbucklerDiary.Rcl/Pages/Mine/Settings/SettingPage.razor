@@ -106,6 +106,20 @@
                     <MIcon>chevron_right</MIcon>
                 </MListItemAction>
             </MListItem>
+            <MDivider Class="mx-5"></MDivider>
+            <MListItem OnClick="@(() => showThemeColor = true)">
+                <MListItemIcon>
+                    <MIcon>
+                        palette
+                    </MIcon>
+                </MListItemIcon>
+                <MListItemContent>
+                    <wc-auto-scroll-text>@(I18n.T("Theme color"))</wc-auto-scroll-text>
+                </MListItemContent>
+                <MListItemAction>
+                    <MIcon>chevron_right</MIcon>
+                </MListItemAction>
+            </MListItem>
         </MList>
     </MCard>
 
@@ -276,3 +290,6 @@
         </MCardActions>
     </MCard>
 </CustomMDialog>
+
+<MorandiThemeDialog @bind-Visible="showThemeColor">
+</MorandiThemeDialog>

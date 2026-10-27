@@ -27,6 +27,8 @@ namespace SwashbucklerDiary.Rcl.Pages
 
         private bool showTheme;
 
+        private bool showThemeColor;
+
         private bool showFeedback;
 
         private bool showPreviewImage;
@@ -155,6 +157,7 @@ namespace SwashbucklerDiary.Rcl.Pages
                         new(this,"Setting","mdi:mdi-cog-outline",() => To("setting")),
                         new(this,"Language","language",() => showLanguage = true),
                         new(this,"Night mode","dark_mode",() => showTheme = true),
+                        new(this,"Theme color","palette",() => showThemeColor = true),
                     }
                 },
                 {

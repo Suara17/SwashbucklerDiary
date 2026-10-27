@@ -6,6 +6,7 @@ using SwashbucklerDiary.Rcl.Essentials;
 using SwashbucklerDiary.Rcl.Extensions;
 using SwashbucklerDiary.Rcl.Models;
 using SwashbucklerDiary.Rcl.Services;
+using SwashbucklerDiary.Rcl.Themes;
 using System.Globalization;
 
 namespace SwashbucklerDiary.Rcl.Layout
@@ -132,6 +133,14 @@ namespace SwashbucklerDiary.Rcl.Layout
         {
             await GlobalConfiguration.InitializeAsync();
             afterInitConfig = true;
+
+            try
+            {
+                var themeColorId = SettingService.Get(s => s.ThemeColorId, MorandiThemes.DefaultThemeId);
+                var currentMorandi = MorandiThemes.GetTheme(themeColorId);
+                await MorandiThemes.ApplyThemeAsync(JSRuntime, MasaBlazor, currentMorandi);
+            }
+            catch { }
         }
 
         protected void HandleLanguageChanged(object? sender, EventArgs e)

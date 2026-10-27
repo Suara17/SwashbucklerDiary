@@ -1,0 +1,71 @@
+@namespace SwashbucklerDiary.Rcl.Components
+@inherits DialogComponentBase
+
+<CustomMDialog MyValue="Visible"
+               MyValueChanged="InternalVisibleChanged"
+               ContentClass="rounded-xl"
+               Scrollable
+               MaxWidth="460">
+    <MCard Class="morandi-dialog-card">
+        <MCardTitle Class="font-weight-bold d-flex align-center pb-2">
+            <MIcon Class="me-2" Color="var(--theme-primary, #6C8A9C)">palette</MIcon>
+            <span>@(I18n.T("Theme color"))</span>
+            <MSpacer></MSpacer>
+            <MButton Icon="true" OnClick="HandleOnCancel">
+                <MIcon>close</MIcon>
+            </MButton>
+        </MCardTitle>
+
+        <MCardSubtitle Class="pb-2 text-caption" Style="color: rgba(var(--m-theme-on-surface), 0.65);">
+            @(I18n.Culture.Name.StartsWith("zh") ? "选择专属莫兰迪治愈色调，应用内所有颜色均将实时替换" : "Select a Morandi palette to refresh all theme colors")
+        </MCardSubtitle>
+
+        <MCardText Class="pa-3" Style="max-height: 480px; overflow-y: auto;">
+            <div class="morandi-palette-list">
+                @foreach (var themeItem in MorandiThemes.Presets)
+                {
+                    var isSelected = themeItem.Id == selectedThemeId;
+                    <div class="morandi-palette-card @(isSelected ? "is-selected" : "")"
+                         @key="themeItem.Id"
+                         @onclick="() => SelectTheme(themeItem)">
+                        
+                        <!-- 色彩预览大圆环/微缩盘 -->
+                        <div class="morandi-color-preview" style="background: @themeItem.LightBg; border-color: @(isSelected ? themeItem.Primary : "rgba(0,0,0,0.06)");">
+                            <span class="morandi-color-core" style="background: @themeItem.Primary;"></span>
+                        </div>
+
+                        <!-- 文本说明 -->
+                        <div class="morandi-meta">
+                            <div class="morandi-name font-weight-bold">
+                                @(I18n.Culture.Name.StartsWith("zh") ? themeItem.Name : themeItem.NameEn)
+                                <span class="morandi-hex ms-2 font-weight-regular text-caption" style="opacity:0.6;">@themeItem.Primary</span>
+                            </div>
+                            <div class="morandi-desc text-caption" style="opacity:0.75;">
+                                @themeItem.Description
+                            </div>
+                        </div>
+
+                        <MSpacer></MSpacer>
+
+                        <!-- 选中对勾微标 -->
+                        @if (isSelected)
+                        {
+                            <div class="morandi-check-icon">
+                                <MIcon Small="true" Color="@themeItem.Primary">check_circle</MIcon>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </MCardText>
+
+        <MCardActions Class="pa-4 pt-1 justify-end">
+            <MButton Text="true" Rounded="true" OnClick="HandleOnCancel">
+                @(I18n.T("Cancel"))
+            </MButton>
+            <MButton Depressed="true" Rounded="true" Color="primary" OnClick="HandleOnConfirm">
+                @(I18n.T("OK"))
+            </MButton>
+        </MCardActions>
+    </MCard>
+</CustomMDialog>

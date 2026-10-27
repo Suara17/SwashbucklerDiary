@@ -33,15 +33,15 @@
         </div>
     </div>
 
-    <!-- 右侧紧凑型莫兰迪卡片 (点击展开/折叠，不再重复显示时间) -->
+    <!-- 右侧紧凑型莫兰迪卡片 (点击展开/折叠，展开后点击内容直接跳转详情) -->
     <div class="timeline-card-col">
         <div class="diary-card-compact @(Value.Top ? "diary-card-compact--top" : "diary-card-compact--default") @(isExpanded ? "is-expanded" : "") @(IsActive ? "is-active" : "")"
-             @onclick="ToggleExpand"
+             @onclick="HandleCardClick"
              @oncontextmenu="OpenMenu"
              __internal_preventDefault_oncontextmenu>
             
-            <!-- 紧凑单行首部 -->
-            <div class="compact-card__headline">
+            <!-- 紧凑单行首部 (点击折叠或展开) -->
+            <div class="compact-card__headline" @onclick="ToggleExpand" @onclick:stopPropagation="true">
                 <div class="compact-card__title-box">
                     <span class="compact-card__title">
                         @(string.IsNullOrWhiteSpace(title) ? (string.IsNullOrWhiteSpace(text) ? I18n.T("Untitled") : text) : title)
@@ -77,8 +77,8 @@
                 </MIcon>
             </div>
 
-            <!-- 点击展开详情区 -->
-            <div class="compact-card__details">
+            <!-- 点击展开详情区 (展开后点击整个内容区直接跳转详情) -->
+            <div class="compact-card__details" @onclick="HandleContentClick" @onclick:stopPropagation="true">
                 <!-- 正文内容 (Markdown / 纯文本) -->
                 @if (!string.IsNullOrWhiteSpace(text))
                 {
@@ -132,19 +132,18 @@
                     </div>
                 }
 
-                <!-- 展开底部轻量操作行 -->
-                <div class="compact-card__action-bar" @onclick:stopPropagation="true">
-                    <MButton Text="true"
-                             XSmall="true"
-                             OnClick="HandeOnClick">
-                        <MIcon XSmall="true" Class="me-1">open_in_new</MIcon>
-                        @I18n.T("Read")
-                    </MButton>
+                <!-- 展开底部轻量提示与操作行 (移除 Read 按钮，支持点击内容直接跳) -->
+                <div class="compact-card__action-bar" @onclick:stopPropagation="false">
+                    <div class="compact-card__tap-hint">
+                        <MIcon Style="font-size:13px;" Class="me-1" Color="var(--theme-primary, #6C8A9C)">open_in_new</MIcon>
+                        <span>@(I18n.T("Tap to read"))</span>
+                    </div>
 
                     <MButton @attributes="activatorAttributes"
                              Icon="true"
                              XSmall="true"
-                             OnClick="OpenMenu">
+                             OnClick="OpenMenu"
+                             @onclick:stopPropagation="true">
                         <MIcon XSmall="true">
                             more_horiz
                         </MIcon>

@@ -12,6 +12,8 @@ namespace SwashbucklerDiary.Rcl.Pages
 
         private bool showQuickRecord;
 
+        private bool showThemeColor;
+
         private string? cacheSize;
 
         [Inject]

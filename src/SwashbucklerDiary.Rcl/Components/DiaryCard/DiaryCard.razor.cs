@@ -27,6 +27,26 @@ namespace SwashbucklerDiary.Rcl.Components
             isExpanded = !isExpanded;
         }
 
+        private void HandleCardClick()
+        {
+            if (!isExpanded)
+            {
+                isExpanded = true;
+            }
+        }
+
+        private async Task HandleContentClick()
+        {
+            if (isExpanded)
+            {
+                await HandeOnClick();
+            }
+            else
+            {
+                isExpanded = true;
+            }
+        }
+
         [Inject]
         private IGlobalConfiguration GlobalConfiguration { get; set; } = default!;
 
