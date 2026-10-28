@@ -19,10 +19,49 @@ namespace SwashbucklerDiary.Rcl.Themes
 
     public static class MorandiThemes
     {
-        public const string DefaultThemeId = "haze-blue";
+        public const string DefaultThemeId = "rouge-ink";
 
         public static readonly List<MorandiThemeModel> Presets = new()
         {
+            // ===== 核心 3 大经典撞色 (依据设计图调配) =====
+            new()
+            {
+                Id = "rouge-ink",
+                Name = "胭脂墨黑",
+                NameEn = "Rouge & Ink",
+                Primary = "#FF7CA2",
+                LightBg = "#FFF0F4",
+                DarkBg = "#13161C",
+                BadgeBg = "#FFE4EC",
+                DarkBadgeBg = "#2E1B24",
+                Description = "甜酷先锋：胭脂粉 × 墨黑色，极夜微光与高光粉撞色"
+            },
+            new()
+            {
+                Id = "periwinkle-brown",
+                Name = "长春花蓝",
+                NameEn = "Periwinkle & Brown",
+                Primary = "#7B8AD7",
+                LightBg = "#F2F4FC",
+                DarkBg = "#281D19",
+                BadgeBg = "#E5E8F8",
+                DarkBadgeBg = "#3D2B24",
+                Description = "美拉德复古：长春花蓝 × 可可棕，冷暖互衬的色彩碰撞"
+            },
+            new()
+            {
+                Id = "sun-wormwood",
+                Name = "浅松艾草",
+                NameEn = "Pine & Wormwood",
+                Primary = "#FFC44F",
+                LightBg = "#FFF9EC",
+                DarkBg = "#14221A",
+                BadgeBg = "#FFF1D4",
+                DarkBadgeBg = "#23382B",
+                Description = "清新生机：浅松黄 × 艾草青，初夏晨曦与青草律动"
+            },
+
+            // ===== 莫兰迪自然治愈色系 =====
             new()
             {
                 Id = "haze-blue",
@@ -170,9 +209,11 @@ namespace SwashbucklerDiary.Rcl.Themes
                     }}
                     .diary-card-compact--default {{
                         background: {theme.LightBg} !important;
+                        border: 1px solid rgba(0, 0, 0, 0.05) !important;
                     }}
                     .theme--dark .diary-card-compact--default {{
                         background: {theme.DarkBg} !important;
+                        border: 1px solid rgba(255, 255, 255, 0.08) !important;
                     }}
                     .timeline-node-badge:not(.timeline-node-badge--top) {{
                         background: {theme.BadgeBg} !important;
@@ -189,8 +230,12 @@ namespace SwashbucklerDiary.Rcl.Themes
                         background-color: {theme.Primary} !important;
                         border-color: {theme.Primary} !important;
                     }}
-                    .diary-card-compact.is-active {{
+                    .diary-card-compact.is-active,
+                    .diary-card-compact:hover {{
                         border-color: {theme.Primary} !important;
+                    }}
+                    .compact-card__tap-hint {{
+                        color: {theme.Primary} !important;
                     }}
                 ".Replace("\r\n", " ").Replace("\n", " ").Replace("\"", "\\\"");
 
