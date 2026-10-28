@@ -208,10 +208,26 @@ namespace SwashbucklerDiary.Rcl.Themes
                     if (masaBlazor.Theme.Themes.Light != null)
                     {
                         masaBlazor.Theme.Themes.Light.Primary = theme.Primary;
+                        if (theme.IsContrastTheme)
+                        {
+                            masaBlazor.Theme.Themes.Light.Surface = theme.PageBg;
+                        }
+                        else
+                        {
+                            masaBlazor.Theme.Themes.Light.Surface = ThemeColor.LightSurface;
+                        }
                     }
                     if (masaBlazor.Theme.Themes.Dark != null)
                     {
                         masaBlazor.Theme.Themes.Dark.Primary = theme.Primary;
+                        if (theme.IsContrastTheme)
+                        {
+                            masaBlazor.Theme.Themes.Dark.Surface = theme.PageBg;
+                        }
+                        else
+                        {
+                            masaBlazor.Theme.Themes.Dark.Surface = ThemeColor.DarkSurface;
+                        }
                     }
                 }
             }
@@ -238,7 +254,8 @@ namespace SwashbucklerDiary.Rcl.Themes
                     extraCss = $@"
                         /* 1. 全局背景与应用包裹层 */
                         html, body, .m-application, .m-application--wrap, .m-main, .my-container,
-                        .page-cache-container, .scroll-container, .adaptive-card-container {{
+                        .page-cache-container, .scroll-container, .my-scroll-container, .adaptive-card-container,
+                        .screenshot, [class*='screenshot-'] {{
                             background-color: {theme.PageBg} !important;
                             color: {theme.TextColor} !important;
                         }}
@@ -338,13 +355,18 @@ namespace SwashbucklerDiary.Rcl.Themes
                             color: {theme.Primary} !important;
                         }}
 
-                        /* 6. 输入框、搜索栏、弹窗、气泡 */
+                        /* 6. 输入框、搜索栏、弹窗、气泡、标签 */
                         .m-input, .m-text-field, .m-text-field--solo .m-input__slot {{
                             background-color: {theme.SurfaceContainer} !important;
                             color: {theme.TextColor} !important;
                         }}
                         .m-text-field input, .m-text-field textarea {{
                             color: {theme.TextColor} !important;
+                        }}
+                        .m-chip {{
+                            background-color: {theme.SurfaceContainer} !important;
+                            color: {theme.TextColor} !important;
+                            border: 1px solid {theme.BorderColor} !important;
                         }}
                         .m-dialog, .m-dialog > .m-card {{
                             background-color: {theme.SurfaceBg} !important;
@@ -391,7 +413,14 @@ namespace SwashbucklerDiary.Rcl.Themes
                             color: #FFFFFF !important;
                         }}
 
-                        /* 8. Markdown 编辑器与预览区域沉浸撞色 */
+                        /* 8. 日记展示页 (ReadPage) 与 Markdown 编辑/预览区域沉浸撞色 */
+                        .screenshot, [class*='screenshot-'], .text-preview {{
+                            background-color: {theme.PageBg} !important;
+                            color: {theme.TextColor} !important;
+                        }}
+                        .screenshot span, .screenshot div, .screenshot .text-h6, .screenshot .text-subtitle-2 {{
+                            color: {theme.TextColor} !important;
+                        }}
                         .vditor, .vditor-toolbar, .vditor-reset, .write-input-wrap, .write-markdown-wrap {{
                             background-color: {theme.PageBg} !important;
                             color: {theme.TextColor} !important;
@@ -404,7 +433,8 @@ namespace SwashbucklerDiary.Rcl.Themes
                         .vditor-toolbar__item svg {{
                             fill: {theme.TextColor} !important;
                         }}
-                        .vditor-reset * {{
+                        .vditor-reset, .vditor-reset * {{
+                            background-color: transparent !important;
                             color: {theme.TextColor} !important;
                         }}
                     ";

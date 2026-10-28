@@ -1,5 +1,5 @@
 ::deep .screenshot {
-    background-color: rgba(var(--m-theme-surface));
+    background-color: transparent;
 }
 
 ::deep .vditor-reset {
