@@ -236,177 +236,177 @@ namespace SwashbucklerDiary.Rcl.Themes
                 if (theme.IsContrastTheme)
                 {
                     extraCss = $@"
-                        // 1. 全局背景与应用包裹层
+                        /* 1. 全局背景与应用包裹层 */
                         html, body, .m-application, .m-application--wrap, .m-main, .my-container,
-                        .page-cache-container, .scroll-container, .adaptive-card-container {
+                        .page-cache-container, .scroll-container, .adaptive-card-container {{
                             background-color: {theme.PageBg} !important;
                             color: {theme.TextColor} !important;
-                        }
+                        }}
 
-                        // 2. 顶栏、底栏、导航抽屉
-                        .m-app-bar, .m-toolbar, .m-toolbar.m-sheet {
+                        /* 2. 顶栏、底栏、导航抽屉 */
+                        .m-app-bar, .m-toolbar, .m-toolbar.m-sheet {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
                             border-bottom: 1px solid {theme.BorderColor} !important;
-                        }
-                        .m-bottom-navigation {
+                        }}
+                        .m-bottom-navigation {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
                             border-top: 1px solid {theme.BorderColor} !important;
-                        }
-                        .m-navigation-drawer {
+                        }}
+                        .m-navigation-drawer {{
                             background-color: {theme.SurfaceBg} !important;
                             border-right: 1px solid {theme.BorderColor} !important;
                             color: {theme.TextColor} !important;
-                        }
+                        }}
 
-                        // 3. 标签栏与导航项
-                        .m-tabs, .my-tab, .m-tabs-bar {
+                        /* 3. 标签栏与导航项 */
+                        .m-tabs, .my-tab, .m-tabs-bar {{
                             background-color: transparent !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .m-tab {
+                        }}
+                        .m-tab {{
                             color: {theme.SubTextColor} !important;
-                        }
-                        .m-tab--active {
+                        }}
+                        .m-tab--active {{
                             color: {theme.Primary} !important;
-                        }
-                        .m-bottom-navigation .m-btn {
+                        }}
+                        .m-bottom-navigation .m-btn {{
                             background-color: transparent !important;
                             color: {theme.SubTextColor} !important;
-                        }
-                        .m-bottom-navigation .m-btn.material-symbols_active {
+                        }}
+                        .m-bottom-navigation .m-btn.material-symbols_active {{
                             color: {theme.Primary} !important;
-                        }
+                        }}
 
-                        // 4. 所有页面卡片、列表容器与分类卡片
-                        .m-card, .m-sheet {
+                        /* 4. 所有页面卡片、列表容器与分类卡片 */
+                        .m-card, .m-sheet {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .m-card:not(.diary-card-compact) {
+                        }}
+                        .m-card:not(.diary-card-compact) {{
                             border: 1px solid {theme.BorderColor} !important;
-                        }
-                        .m-list {
+                        }}
+                        .m-list {{
                             background-color: transparent !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .m-list-item {
+                        }}
+                        .m-list-item {{
                             color: {theme.TextColor} !important;
-                        }
-                        .m-list-item__title, .m-list-item__subtitle {
+                        }}
+                        .m-list-item__title, .m-list-item__subtitle {{
                             color: {theme.TextColor} !important;
-                        }
-                        .m-list-item__subtitle {
+                        }}
+                        .m-list-item__subtitle {{
                             opacity: 0.72;
-                        }
+                        }}
 
-                        // 5. 日记时间轴卡片与专属内容微排版
-                        .diary-card-compact--default {
+                        /* 5. 日记时间轴卡片与专属内容微排版 */
+                        .diary-card-compact--default {{
                             background: {theme.LightBg} !important;
                             border: 1px solid {theme.BorderColor} !important;
                             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
-                        }
-                        .compact-card__title, .compact-card__content, .m-toolbar-title {
+                        }}
+                        .compact-card__title, .compact-card__content, .m-toolbar-title {{
                             color: {theme.TextColor} !important;
-                        }
-                        .compact-card__content {
+                        }}
+                        .compact-card__content {{
                             opacity: 0.88;
-                        }
-                        .timeline-row::before, .timeline-time-col {
+                        }}
+                        .timeline-row::before, .timeline-time-col {{
                             color: {theme.SubTextColor} !important;
-                        }
-                        .compact-card__inner-box {
+                        }}
+                        .compact-card__inner-box {{
                             background: {theme.SurfaceContainer} !important;
                             color: {theme.SubTextColor} !important;
                             border: 1px solid {theme.BorderColor} !important;
-                        }
-                        .compact-card__inner-box strong, .compact-card__inner-box span {
+                        }}
+                        .compact-card__inner-box strong, .compact-card__inner-box span {{
                             color: {theme.TextColor} !important;
-                        }
-                        .compact-card__pill {
+                        }}
+                        .compact-card__pill {{
                             background: {theme.DarkBadgeBg} !important;
                             color: {theme.Primary} !important;
                             border: 1px solid {theme.BorderColor} !important;
-                        }
-                        .timeline-node-badge:not(.timeline-node-badge--top) {
+                        }}
+                        .timeline-node-badge:not(.timeline-node-badge--top) {{
                             background: {theme.BadgeBg} !important;
                             color: {theme.Primary} !important;
                             border: 2px solid {theme.PageBg} !important;
-                        }
-                        .setting-title {
+                        }}
+                        .setting-title {{
                             color: {theme.Primary} !important;
-                        }
+                        }}
 
-                        // 6. 输入框、搜索栏、弹窗、气泡
-                        .m-input, .m-text-field, .m-text-field--solo .m-input__slot {
+                        /* 6. 输入框、搜索栏、弹窗、气泡 */
+                        .m-input, .m-text-field, .m-text-field--solo .m-input__slot {{
                             background-color: {theme.SurfaceContainer} !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .m-text-field input, .m-text-field textarea {
+                        }}
+                        .m-text-field input, .m-text-field textarea {{
                             color: {theme.TextColor} !important;
-                        }
-                        .m-dialog, .m-dialog > .m-card {
+                        }}
+                        .m-dialog, .m-dialog > .m-card {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
                             border: 1px solid {theme.BorderColor} !important;
-                        }
-                        .morandi-dialog-card {
+                        }}
+                        .morandi-dialog-card {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .morandi-palette-card {
+                        }}
+                        .morandi-palette-card {{
                             background: {theme.SurfaceContainer} !important;
                             border: 1.5px solid {theme.BorderColor} !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .morandi-palette-card.is-selected {
+                        }}
+                        .morandi-palette-card.is-selected {{
                             background: {theme.SurfaceContainer} !important;
                             border-color: {theme.Primary} !important;
-                        }
-                        .morandi-name {
+                        }}
+                        .morandi-name {{
                             color: {theme.TextColor} !important;
-                        }
-                        .morandi-desc {
+                        }}
+                        .morandi-desc {{
                             color: {theme.SubTextColor} !important;
-                        }
-                        .m-divider {
+                        }}
+                        .m-divider {{
                             border-color: {theme.BorderColor} !important;
                             opacity: 0.5;
-                        }
-                        .m-icon {
+                        }}
+                        .m-icon {{
                             color: inherit;
-                        }
+                        }}
 
-                        // 7. 日历页面 MDatePicker 深度撞色适配
-                        .m-picker, .m-picker__body, .m-date-picker-table, .m-date-picker-header {
+                        /* 7. 日历页面 MDatePicker 深度撞色适配 */
+                        .m-picker, .m-picker__body, .m-date-picker-table, .m-date-picker-header {{
                             background-color: {theme.SurfaceBg} !important;
                             color: {theme.TextColor} !important;
-                        }
-                        .m-date-picker-table th, .m-date-picker-table .m-btn__content {
+                        }}
+                        .m-date-picker-table th, .m-date-picker-table .m-btn__content {{
                             color: {theme.TextColor} !important;
-                        }
-                        .m-date-picker-table .m-btn--active {
+                        }}
+                        .m-date-picker-table .m-btn--active {{
                             background-color: {theme.Primary} !important;
                             color: #FFFFFF !important;
-                        }
+                        }}
 
-                        // 8. Markdown 编辑器与预览区域沉浸撞色
-                        .vditor, .vditor-toolbar, .vditor-reset, .write-input-wrap, .write-markdown-wrap {
+                        /* 8. Markdown 编辑器与预览区域沉浸撞色 */
+                        .vditor, .vditor-toolbar, .vditor-reset, .write-input-wrap, .write-markdown-wrap {{
                             background-color: {theme.PageBg} !important;
                             color: {theme.TextColor} !important;
                             border-color: {theme.BorderColor} !important;
-                        }
-                        .vditor-toolbar {
+                        }}
+                        .vditor-toolbar {{
                             background-color: {theme.SurfaceBg} !important;
                             border-top: 1px solid {theme.BorderColor} !important;
-                        }
-                        .vditor-toolbar__item svg {
+                        }}
+                        .vditor-toolbar__item svg {{
                             fill: {theme.TextColor} !important;
-                        }
-                        .vditor-reset * {
+                        }}
+                        .vditor-reset * {{
                             color: {theme.TextColor} !important;
-                        }
+                        }}
                     ";
                 }
 
