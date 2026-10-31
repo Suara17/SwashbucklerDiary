@@ -15,5 +15,10 @@ namespace SwashbucklerDiary.Rcl.Components
         public bool Markdown { get; set; }
 
         public bool AutoTitle { get; set; }
-        }
+
+        /// <summary>
+        /// 每日首条日记的 ID 集合，用于在时间轴中渲染日期分组标题
+        /// </summary>
+        public HashSet<Guid> FirstDayDiaryIds { get; set; } = [];
+    }
 }

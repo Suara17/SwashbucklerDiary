@@ -105,6 +105,35 @@ namespace SwashbucklerDiary.Rcl.Components
             }
         }
 
+        private bool IsFirstDayItem => DiaryCardListOptions?.FirstDayDiaryIds?.Contains(Value.Id) ?? false;
+
+        private string FormattedDateHeader
+        {
+            get
+            {
+                var dt = Value.CreateTime;
+                var today = DateTime.Today;
+                var date = dt.Date;
+
+                string dayRelative = "";
+                if (date == today)
+                {
+                    dayRelative = I18n.T("Today");
+                }
+                else if (date == today.AddDays(-1))
+                {
+                    dayRelative = I18n.T("Yesterday");
+                }
+                else
+                {
+                    dayRelative = dt.ToString("ddd", I18n.Culture);
+                }
+
+                var dateStr = dt.ToString(DateDisplayFormat, I18n.Culture);
+                return string.IsNullOrEmpty(dayRelative) ? dateStr : $"{dateStr} · {dayRelative}";
+            }
+        }
+
         private string CardClass => new CssBuilder()
             .Add("diary-card")
             .Add("is-active", IsActive)

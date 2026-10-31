@@ -80,6 +80,26 @@ namespace SwashbucklerDiary.Rcl.Components
             return diaries;
         }
 
+        protected override void UpdateInternalValue()
+        {
+            base.UpdateInternalValue();
+
+            // 计算按日期流显示时，每日首次出现的日记卡片 ID
+            var firstIds = new HashSet<Guid>();
+            DateOnly? lastDate = null;
+            foreach (var item in InternalValue)
+            {
+                var itemDate = DateOnly.FromDateTime(item.CreateTime);
+                if (lastDate != itemDate)
+                {
+                    firstIds.Add(item.Id);
+                    lastDate = itemDate;
+                }
+            }
+
+            options.FirstDayDiaryIds = firstIds;
+        }
+
         protected override void ReadSettings()
         {
             base.ReadSettings();

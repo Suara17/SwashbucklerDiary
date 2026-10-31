@@ -1,40 +1,56 @@
 @namespace SwashbucklerDiary.Rcl.Components
 @inherits CardComponentBase<DiaryModel>
 
-<div class="timeline-row @(IsActive ? "is-active" : "")">
-    <!-- 左侧时间戳 (HH:mm) -->
-    <div class="timeline-time-col">
-        @(Value.CreateTime.ToString("HH:mm"))
-    </div>
-
-    <!-- 中间节点图标 (圆圈 + 微标) -->
-    <div class="timeline-node-col">
-        <div class="timeline-node-badge @(Value.Top ? "timeline-node-badge--top" : "")">
-            @if (!string.IsNullOrEmpty(weatherIcon))
-            {
-                <MIcon Class="diary-card-icon" Style="font-size:14px;">
-                    @weatherIcon
-                </MIcon>
-            }
-            else if (!string.IsNullOrEmpty(moodIcon))
-            {
-                <MIcon Class="diary-card-icon" Style="font-size:14px;">
-                    @moodIcon
-                </MIcon>
-            }
-            else if (Value.Top)
-            {
-                <MIcon Style="font-size:14px;">star</MIcon>
-            }
-            else
-            {
-                <MIcon Style="font-size:14px;">edit_note</MIcon>
-            }
+<div class="timeline-item-wrapper">
+    @if (IsFirstDayItem)
+    {
+        <!-- 按天聚合日期指示栏 (月份与日期) -->
+        <div class="timeline-day-header">
+            <div class="timeline-day-header__left"></div>
+            <div class="timeline-day-header__dot">
+                <span class="timeline-day-header__dot-core"></span>
+            </div>
+            <div class="timeline-day-header__pill">
+                <MIcon Class="timeline-day-header__icon" Style="font-size:13px;">calendar_today</MIcon>
+                <span class="timeline-day-header__text">@FormattedDateHeader</span>
+            </div>
         </div>
-    </div>
+    }
 
-    <!-- 右侧紧凑型莫兰迪卡片 (点击展开/折叠，展开后点击内容直接跳转详情) -->
-    <div class="timeline-card-col">
+    <div class="timeline-row @(IsActive ? "is-active" : "")">
+        <!-- 左侧时间戳 (HH:mm) -->
+        <div class="timeline-time-col">
+            @(Value.CreateTime.ToString("HH:mm"))
+        </div>
+
+        <!-- 中间节点图标 (圆圈 + 微标) -->
+        <div class="timeline-node-col">
+            <div class="timeline-node-badge @(Value.Top ? "timeline-node-badge--top" : "")">
+                @if (!string.IsNullOrEmpty(weatherIcon))
+                {
+                    <MIcon Class="diary-card-icon" Style="font-size:14px;">
+                        @weatherIcon
+                    </MIcon>
+                }
+                else if (!string.IsNullOrEmpty(moodIcon))
+                {
+                    <MIcon Class="diary-card-icon" Style="font-size:14px;">
+                        @moodIcon
+                    </MIcon>
+                }
+                else if (Value.Top)
+                {
+                    <MIcon Style="font-size:14px;">star</MIcon>
+                }
+                else
+                {
+                    <MIcon Style="font-size:14px;">edit_note</MIcon>
+                }
+            </div>
+        </div>
+
+        <!-- 右侧紧凑型莫兰迪卡片 (点击展开/折叠，展开后点击内容直接跳转详情) -->
+        <div class="timeline-card-col">
         <div class="diary-card-compact @(Value.Top ? "diary-card-compact--top" : "diary-card-compact--default") @(isExpanded ? "is-expanded" : "") @(IsActive ? "is-active" : "")"
              @onclick="HandleCardClick"
              @oncontextmenu="OpenMenu"
@@ -154,4 +170,5 @@
 
         </div>
     </div>
+</div>
 </div>
