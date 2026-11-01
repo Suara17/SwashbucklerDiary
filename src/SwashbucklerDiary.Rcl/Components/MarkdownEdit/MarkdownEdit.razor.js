@@ -156,4 +156,43 @@ function fixCopyCut(dotNetCallbackRef, element) {
     });
 }
 
-export { after, focus, focusToEnd, upload, setMoblieOutline, getTooltipInfos }
+function insertValue(domRef, value) {
+    if (!domRef || !domRef.Vditor) return;
+    try {
+        const vditor = domRef.Vditor.vditor;
+        const currentMode = vditor ? vditor.currentMode : null;
+        let range = currentMode && vditor[currentMode] ? vditor[currentMode].range : null;
+        const selection = window.getSelection();
+
+        if (range) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            // 当 range 为空或光标未激活时，自动落到末尾
+            const editArea = domRef.querySelector('.vditor-reset') || domRef.querySelector('[contenteditable="true"]') || domRef;
+            if (editArea) {
+                const newRange = document.createRange();
+                newRange.selectNodeContents(editArea);
+                newRange.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+                if (vditor && currentMode && vditor[currentMode]) {
+                    vditor[currentMode].range = newRange;
+                }
+            }
+        }
+        domRef.Vditor.focus();
+        domRef.Vditor.insertValue(value, true);
+    } catch (e) {
+        console.error("MarkdownEdit insertValue error:", e);
+        try {
+            // 保底方案：如果 insertValue 发生异常，追加至末尾
+            const currentVal = domRef.Vditor.getValue() || '';
+            domRef.Vditor.setValue(currentVal + (currentVal ? '\n' : '') + value);
+        } catch (err) {
+            console.error("MarkdownEdit fallback setValue error:", err);
+        }
+    }
+}
+
+export { after, focus, focusToEnd, upload, setMoblieOutline, getTooltipInfos, insertValue }

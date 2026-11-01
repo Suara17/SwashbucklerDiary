@@ -158,11 +158,11 @@
             <MListItem OnClick="@(() => To("alertSetting"))">
                 <MListItemIcon>
                     <MIcon>
-                        call_to_action
+                        notifications
                     </MIcon>
                 </MListItemIcon>
                 <MListItemContent>
-                    <wc-auto-scroll-text>@(I18n.T("Snackbars"))</wc-auto-scroll-text>
+                    <wc-auto-scroll-text>@(I18n.Culture.Name.StartsWith("zh") ? "通知与提醒" : I18n.T("Snackbars"))</wc-auto-scroll-text>
                 </MListItemContent>
                 <MListItemAction>
                     <MIcon>chevron_right</MIcon>

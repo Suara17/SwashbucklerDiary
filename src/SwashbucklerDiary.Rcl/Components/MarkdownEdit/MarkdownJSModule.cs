@@ -35,6 +35,11 @@ namespace SwashbucklerDiary.Rcl.Components
             await base.InvokeVoidAsync("setMoblieOutline", [element, outlineElement]);
         }
 
+        public async Task InsertValue(ElementReference element, string value)
+        {
+            await base.InvokeVoidAsync("insertValue", [element, value]);
+        }
+
         public ValueTask<TooltipInfo[]?> GetTooltipInfos(ElementReference element)
         {
             return base.InvokeAsync<TooltipInfo[]?>("getTooltipInfos", element);

@@ -114,9 +114,15 @@ namespace SwashbucklerDiary.Rcl.Components
                 return;
             }
 
-            await Focus();
-
-            await mMarkdown.InsertValueAsync(value);
+            if (jSModule is not null)
+            {
+                await jSModule.InsertValue(mMarkdown.Ref, value);
+            }
+            else
+            {
+                await Focus();
+                await mMarkdown.InsertValueAsync(value);
+            }
         }
 
         public ValueTask<string?> GetValueAsync()

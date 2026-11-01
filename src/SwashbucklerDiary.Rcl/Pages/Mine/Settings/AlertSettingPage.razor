@@ -2,7 +2,7 @@
 @namespace SwashbucklerDiary.Rcl.Pages
 @inherits ImportantComponentBase
 
-<MyAppBar Title="@(I18n.T("Snackbars"))"
+<MyAppBar Title="@(I18n.Culture.Name.StartsWith("zh") ? "通知与提醒" : I18n.T("Snackbars"))"
           OnClick="NavigateToBack">
 </MyAppBar>
 
@@ -42,6 +42,56 @@
             <MListItem>
                 <MListItemIcon>
                     <MIcon>
+                        notifications_active
+                    </MIcon>
+                </MListItemIcon>
+                <MListItemContent>
+                    <wc-auto-scroll-text>@(I18n.Culture.Name.StartsWith("zh") ? "每日写日记提醒" : "Daily diary reminder")</wc-auto-scroll-text>
+                </MListItemContent>
+                <MListItemAction>
+                    <SettingSwitch @bind-Value="dailyReminder"
+                                   OnSettingChanged="HandleDailyReminderChanged"
+                                   SettingKey="@nameof(Setting.DailyReminder)">
+                    </SettingSwitch>
+                </MListItemAction>
+            </MListItem>
+
+            @if (dailyReminder)
+            {
+                <MDivider Class="mx-5"></MDivider>
+
+                <MListItem OnClick="() => showTimePicker = true">
+                    <MListItemIcon>
+                        <MIcon>
+                            schedule
+                        </MIcon>
+                    </MListItemIcon>
+
+                    <MListItemContent Style="flex-basis:50%;">
+                        <wc-auto-scroll-text>@(I18n.Culture.Name.StartsWith("zh") ? "提醒时间" : "Reminder time")</wc-auto-scroll-text>
+                    </MListItemContent>
+
+                    <MListItemContent Class="ms-2" Style="flex-basis:50%;">
+                        <MListItemSubtitle>
+                            <wc-auto-scroll-text class="justify-end" style="width:100%;">@dailyReminderTimeStr</wc-auto-scroll-text>
+                        </MListItemSubtitle>
+                    </MListItemContent>
+
+                    <MListItemAction>
+                        <MIcon>chevron_right</MIcon>
+                    </MListItemAction>
+                </MListItem>
+            }
+        </MList>
+    </MCard>
+
+    <MCard Class="mb-5"
+           Elevation="0"
+           Rounded="@("lg")">
+        <MList Class="py-0">
+            <MListItem>
+                <MListItemIcon>
+                    <MIcon>
                         trophy
                     </MIcon>
                 </MListItemIcon>
@@ -66,3 +116,8 @@
                   Items="timeoutItems"
                   Mandatory="true">
 </SelectChipDialog>
+
+<MultiSizeTimePicker @bind-Visible="showTimePicker"
+                     Value="dailyReminderTime"
+                     ValueChanged="HandleTimeChanged">
+</MultiSizeTimePicker>

@@ -136,5 +136,15 @@ namespace SwashbucklerDiary.Rcl.Essentials
         ValueTask<bool> IsBiometricSupported();
 
         Task<bool> BiometricAuthenticateAsync();
+
+        /// <summary>
+        /// 检查或请求通知权限
+        /// </summary>
+        Task<bool> RequestNotificationPermissionAsync();
+
+        /// <summary>
+        /// 调度或取消每日定时写日记提醒
+        /// </summary>
+        Task ScheduleDailyReminderAsync(bool enable, int hour, int minute, string title, string content);
     }
 }

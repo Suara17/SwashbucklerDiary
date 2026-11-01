@@ -69,5 +69,7 @@ namespace SwashbucklerDiary.Rcl.Services
         public bool LinkCard { get; set; } = true;
         public bool DiaryCardDefaultTitle { get; set; } = true;
         public string ThemeColorId { get; set; } = "haze-blue";
+        public bool DailyReminder { get; set; }
+        public string DailyReminderTime { get; set; } = "21:00";
     }
 }
