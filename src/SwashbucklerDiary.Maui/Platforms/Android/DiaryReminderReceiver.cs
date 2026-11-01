@@ -46,10 +46,18 @@ namespace SwashbucklerDiary.Maui.Platforms.Android
                 .SetSmallIcon(global::Android.Resource.Drawable.IcDialogInfo)
                 .SetAutoCancel(true)
                 .SetPriority(NotificationCompat.PriorityHigh)
-                .SetDefaults(NotificationCompat.DefaultAll)
-                .SetContentIntent(pendingIntent);
+                .SetDefaults(NotificationCompat.DefaultAll);
 
-            notificationManager.Notify(NotificationId, builder.Build());
+            if (pendingIntent != null)
+            {
+                builder.SetContentIntent(pendingIntent);
+            }
+
+            var notification = builder.Build();
+            if (notification != null)
+            {
+                notificationManager.Notify(NotificationId, notification);
+            }
         }
     }
 }

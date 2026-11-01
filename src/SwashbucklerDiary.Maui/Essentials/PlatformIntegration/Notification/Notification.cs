@@ -2,6 +2,7 @@
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Microsoft.Extensions.Logging;
 using SwashbucklerDiary.Maui.Platforms.Android;
 #endif
 
@@ -46,6 +47,8 @@ namespace SwashbucklerDiary.Maui.Essentials
                     DiaryReminderReceiver.NotificationId, 
                     intent, 
                     PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
+
+                if (pendingIntent == null) return Task.CompletedTask;
 
                 if (!enable)
                 {
