@@ -21,9 +21,6 @@ namespace SwashbucklerDiary.Rcl.Pages
 
         private Dictionary<string, int> timeoutItems = [];
 
-        [Inject]
-        private IPlatformIntegration PlatformIntegration { get; set; } = default!;
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
